@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高中生物胞吐实验</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+        }
+
+        /* 动态背景：多色渐变循环，避免单调，平缓不刺眼 */
+        body {
+            min-height: 100vh;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c, #ffcb74);
+            background-size: 500% 500%;
+            animation: dynamicBg 20s ease infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            position: relative;
+        }
+
+        /* 动态背景动画关键帧 */
+        @keyframes dynamicBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 高分辨率视频卡片：非全屏，卡片式布局提升层次感 */
+        .video-card {
+            width: 900px;
+            max-width: 90vw;
+            background-color: rgba(255, 255, 255, 0.97);
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 视频容器：非全屏，固定比例保证高清显示 */
+        .video-wrapper {
+            width: 100%;
+            height: 500px; /* 非全屏高度，可自定义 */
+            position: relative;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保持高分辨率视频比例，不拉伸 */
+            object-position: center; /* 优先显示视频中心高清区域 */
+            display: block;
+        }
+
+        /* 视频信息栏：丰富页面，避免单调 */
+        .video-info {
+            padding: 20px 30px;
+            background-color: rgba(0, 0, 0, 0.02);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .video-info h3 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .video-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* 左侧侧边栏：固定位置，垂直居中，新颖按钮排列 */
+        .sidebar {
+            position: fixed;
+            top: 50%;
+            left: 40px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 2;
+        }
+
+        /* 【新颖样式】视频阶段控制按钮 */
+        .stage-btn {
+            padding: 16px 28px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 按钮内部发光扫移动效，提升新颖度 */
+        .stage-btn::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            transform: rotate(30deg);
+            transition: all 0.6s ease;
+            opacity: 0;
+        }
+
+        .stage-btn:hover {
+            background: linear-gradient(135deg, #5a6edb, #6b4191);
+            transform: translateX(10px) scale(1.06);
+            box-shadow: 0 8px 22px rgba(102, 126, 234, 0.4);
+        }
+
+        .stage-btn:hover::before {
+            opacity: 1;
+            transform: rotate(30deg) translate(50%, 50%);
+        }
+
+        /* 【差异化样式】页面跳转按钮，更醒目 */
+        .jump-btn {
+            padding: 18px 32px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #f5576c, #f093fb);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.3);
+            transition: all 0.4s ease;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .jump-btn:hover {
+            background: linear-gradient(135deg, #e44a5d, #e87fda);
+            transform: translateX(10px) scale(1.06);
+            box-shadow: 0 8px 22px rgba(245, 87, 108, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- 左侧侧边栏（按钮自动生成） -->
+    <div class="sidebar" id="sidebarContainer"></div>
+
+    <!-- 高分辨率视频卡片（非全屏） -->
+    <div class="video-card">
+        <div class="video-wrapper">
+            <video id="targetVideo" muted>
+                <!-- 1080P高分辨率测试视频，替换自有视频优先选择1080P/4K MP4 -->
+                <source src="aa07fefe9263a5fd9dd70613c5751f0a_raw 2.mp4" type="video/mp4">
+                你的浏览器不支持HTML5视频播放，请升级浏览器
+            </video>
+        </div>
+    </div>
+
+    <script>
+        // ====================== 后台配置区域（仅在这里调整，页面不显示） ======================
+        // 1. 视频播放阶段配置：{ 按钮名称, 开始秒数, 结束秒数 }，可自由添加/删除/修改
+        const videoStages = [
+            { name: "阶段一", start: 0, end: 2 },
+            { name: "阶段二", start: 2, end: 5.2 },
+            { name: "阶段三", start: 5.5, end: 9 },
+            { name: "全程", start: 1, end: 7 }
+        ];
+
+        // 2. 页面跳转配置：修改按钮名称和目标地址即可
+        const jumpConfig = {
+            btnName: "跳转至卡牌页面",
+            targetUrl: "https://every-wind.github.io/card.github.io/" // 支持外网/本地HTML：./page2.html
+        };
+
+        // ====================== 核心功能（无需修改，保持简洁） ======================
+        const video = document.getElementById("targetVideo");
+        const sidebarContainer = document.getElementById("sidebarContainer");
+
+        // 步骤1：生成视频阶段控制按钮（侧边栏）
+        function initStageButtons() {
+            videoStages.forEach((stage, index) => {
+                const btn = document.createElement("button");
+                btn.innerText = stage.name;
+                btn.className = "stage-btn";
+                btn.onclick = () => playTargetStage(index);
+                sidebarContainer.appendChild(btn);
+            });
+        }
+
+        // 步骤2：生成页面跳转按钮（侧边栏，差异化样式）
+        function initJumpButton() {
+            const jumpBtn = document.createElement("button");
+            jumpBtn.innerText = jumpConfig.btnName;
+            jumpBtn.className = "jump-btn";
+            jumpBtn.onclick = () => {
+                // 两种跳转方式可选，默认当前标签页跳转
+                window.location.href = jumpConfig.targetUrl;
+                // 打开新标签页跳转：window.open(jumpConfig.targetUrl, "_blank");
+            };
+            sidebarContainer.appendChild(jumpBtn);
+        }
+
+        // 步骤3：播放指定视频阶段，自动验证时间并暂停
+        function playTargetStage(index) {
+            const stage = videoStages[index];
+            if (!stage) return;
+
+            // 验证时间有效性，避免无效数值
+            const validStart = Math.max(0, stage.start);
+            const validEnd = Math.max(validStart, stage.end);
+
+            // 跳转至开始时间并播放高分辨率视频
+            video.currentTime = validStart;
+            video.play().catch(err => console.error("视频播放失败：", err));
+
+            // 到达结束时间自动暂停，移除监听避免干扰
+            const checkVideoTime = () => {
+                if (video.currentTime >= validEnd) {
+                    video.pause();
+                    video.removeEventListener("timeupdate", checkVideoTime);
+                }
+            };
+            video.addEventListener("timeupdate", checkVideoTime);
+        }
+
+        // 页面加载完成后初始化所有按钮
+        window.onload = () => {
+            initStageButtons();
+            initJumpButton();
+        };
+    </script>
+</body>
+</html>
